@@ -1,0 +1,97 @@
+﻿@page "/LoginCustom/{BookingId:int}"
+
+@using Travel400.Model
+@using Travel400.Service
+@inject SupabaseService SupabaseService
+@inject NavigationManager Navigation
+
+<link href="css/LoginCustomer.css" rel="stylesheet" />
+
+<div class="login-wrapper">
+
+    <!-- القسم الأيمن: معلومات الحجز -->
+    <div class="booking-panel">
+        @if (booking != null)
+        {
+            <div class="booking-card">
+                <h2>تفاصيل الحجز</h2>
+                <p><strong>الدولة:</strong> @booking.CountryName</p>
+                <p><strong>تاريخ الرحلة:</strong> @booking.TravelDate.ToShortDateString()</p>
+                <p><strong>عدد المقاعد:</strong> @booking.SeatsRequested</p>
+                <p><strong>رقم الهاتف:</strong> @booking.ContactPhone</p>
+                @if (!string.IsNullOrWhiteSpace(booking.Notes))
+                {
+                    <p><strong>ملاحظات:</strong> @booking.Notes</p>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- القسم الأيسر: نموذج الزبون -->
+    <div class="form-panel">
+        <RadzenTemplateForm TItem="Customer" Data="@customer" Submit="@HandleValidSubmit">
+            <div class="form-container">
+                <div class="form-header">
+                    <img src="https://cdn-icons-png.flaticon.com/512/681/681392.png" alt="logo" />
+                    Reyad Travel
+                </div>
+
+                <div class="form-title">بيانات الزبون</div>
+
+                <div class="form-field">
+                    <RadzenTextBox @bind-Value="customer.FullName" Name="FullName" Placeholder="الاسم الكامل" Style="width:100%" />
+                    <ValidationMessage For="@(() => customer.FullName)" />
+                </div>
+
+                <div class="form-field">
+                    <RadzenTextBox @bind-Value="customer.PassportNumber" Name="PassportNumber" Placeholder="رقم الجواز" Style="width:100%" />
+                    <ValidationMessage For="@(() => customer.PassportNumber)" />
+                </div>
+
+                <div class="form-field">
+                    <RadzenTextBox @bind-Value="customer.Nationality" Name="Nationality" Placeholder="الجنسية" Style="width:100%" />
+                    <ValidationMessage For="@(() => customer.Nationality)" />
+                </div>
+
+                <div class="form-field">
+                    <RadzenTextBox @bind-Value="customer.Phone" Name="Phone" Placeholder="رقم الهاتف" Style="width:100%" />
+                    <ValidationMessage For="@(() => customer.Phone)" />
+                </div>
+
+                <div class="form-field">
+                    <RadzenTextBox @bind-Value="customer.Email" Name="Email" Placeholder="البريد الإلكتروني" Style="width:100%" />
+                    <ValidationMessage For="@(() => customer.Email)" />
+                </div>
+
+                <div class="form-field">
+                    <RadzenDropDown @bind-Value="customer.Gender" Name="Gender"
+                                    Placeholder="الجنس"
+                                    Data="@genders"
+                                    Style="width:100%" />
+                </div>
+
+                <RadzenButton Text="تسجيل" Icon="check" Type="Submit" class="btn-submit" />
+            </div>
+        </RadzenTemplateForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int BookingId { get; set; }
+
+    Booking? booking;
+    Customer customer = new();
+    List<string> genders = new() { "ذكر", "أنثى" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        booking = await SupabaseService.GetBookingByIdAsync(BookingId);
+    }
+
+    async Task HandleValidSubmit(Customer submittedCustomer)
+    {
+        await SupabaseService.AddCustomerAsync(submittedCustomer);
+        Navigation.NavigateTo("/CustomerDataGrid");
+    }
+}

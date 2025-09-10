@@ -1,0 +1,117 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Cairo', sans-serif;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 24px;
+    margin: 30px 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1300px;
+    margin-right: auto;
+    margin-left: 0;
+    direction: rtl;
+}
+
+.booking-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    direction: rtl;
+}
+
+.booking-card {
+    flex: 1;
+    width: 850px; /* ✅ أوسع عرض */
+    padding: 25px 30px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.4s ease;
+    overflow: hidden;
+    border: 1px solid #eee;
+    position: relative;
+}
+
+    .booking-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 25px rgba(255, 112, 67, 0.3); /* ✅ لمعة جذابة */
+        background: linear-gradient(135deg, #fff, #fff7f5);
+    }
+
+    .booking-card h4 {
+        margin: 0 0 15px 0;
+        color: #ff7043;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .booking-card p {
+        margin: 6px 0;
+        color: #444;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .booking-card p i {
+            color: #ff7043;
+            font-size: 18px;
+        }
+
+.card-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+    .card-buttons .rz-button {
+        min-width: 130px;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .card-buttons .rz-button[buttonstyle="Primary"] {
+            background-color: #00796b; /* ✅ أخضر غامق */
+        }
+
+        .card-buttons .rz-button[buttonstyle="Secondary"] {
+            background-color: #1565c0; /* ✅ أزرق غامق */
+        }
+
+        .card-buttons .rz-button[buttonstyle="Danger"] {
+            background-color: #c62828; /* ✅ أحمر غامق */
+        }
+
+.cancel-text {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.card-corner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 50px solid #ff7043;
+    border-right: 50px solid transparent;
+    border-radius: 12px 0 0 0;
+    z-index: 1;
+}

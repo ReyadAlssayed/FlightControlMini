@@ -1,0 +1,107 @@
+﻿@page "/Statistics"
+@using Travel400.Service
+@inject SupabaseService SupabaseService
+@inject NavigationManager Navigation
+
+<link href="css/Statistics.css" rel="stylesheet" />
+
+<h2 class="main-title">📚 إحصائيات الحجوزات - ReyadTravel</h2>
+
+<RadzenButton Text="🔍 ابحث عن زبون"
+              Click="@GoToSearch"
+              Style="background-color: #ff7043; color: white; margin-bottom: 20px;" />
+
+<button class="toggle-btn" @onclick="() => showChart = !showChart">
+    @(showChart ? "عرض كبطاقات" : "عرض كمدرج بياني")
+</button>
+
+@if (loading)
+{
+    <p>⏳ جاري التحميل...</p>
+}
+else
+{
+    <div class="stats-cards">
+        <div class="info-card">
+            <h4>عدد الرحلات</h4>
+            <p>@totalBookings</p>
+            <div class="card-accent"></div>
+        </div>
+        <div class="info-card">
+            <h4>عدد الزبائن</h4>
+            <p>@totalCustomers</p>
+            <div class="card-accent"></div>
+        </div>
+        <div class="info-card">
+            <h4>الملغاة</h4>
+            <p>@canceledBookings</p>
+            <div class="card-accent"></div>
+        </div>
+        <div class="info-card">
+            <h4>الأكثر طلباً</h4>
+            <p>@mostPopularCountry</p>
+            <div class="card-accent"></div>
+        </div>
+    </div>
+
+    @if (showChart)
+    {
+        <h3 class="section-title">📊 المقاعد المتبقية لكل دولة (مدرج بياني)</h3>
+        <div class="bar-graph">
+            @foreach (var item in seatsPerCountry)
+            {
+                var full = item.Value.totalSeats;
+                var remain = item.Value.remainingSeats;
+                var used = full - remain;
+                var percent = full > 0 ? ((double)remain / full) * 100 : 0;
+
+                <div class="bar-row">
+                    <span class="country-label">@item.Key</span>
+                    <div class="bar-background">
+                        <div class="bar-fill" style="width:@percent%"></div>
+                        <span class="bar-text">@remain مقعد</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <h3 class="section-title">🗂️ المقاعد المتبقية لكل دولة</h3>
+        <div class="grid-cards">
+            @foreach (var item in seatsPerCountry)
+            {
+                <div class="country-card">
+                    <h5>@item.Key</h5>
+                    <p>@item.Value.remainingSeats مقعد</p>
+                </div>
+            }
+        </div>
+    }
+}
+
+@code {
+    int totalBookings;
+    int totalCustomers;
+    int canceledBookings;
+    string? mostPopularCountry;
+    bool loading = true;
+    bool showChart = false;
+
+    Dictionary<string, (int totalSeats, int remainingSeats)> seatsPerCountry = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        totalBookings = await SupabaseService.GetTotalBookingsCountAsync();
+        totalCustomers = await SupabaseService.GetTotalCustomersCountAsync();
+        canceledBookings = await SupabaseService.GetCanceledBookingsCountAsync();
+        mostPopularCountry = await SupabaseService.GetMostPopularCountryAsync();
+        seatsPerCountry = await SupabaseService.GetSeatsStatusPerCountryAsync();
+        loading = false;
+    }
+
+    void GoToSearch()
+    {
+        Navigation.NavigateTo("/SearchCustomer");
+    }
+}

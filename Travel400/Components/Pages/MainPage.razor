@@ -1,0 +1,59 @@
+﻿@page "/"
+@namespace Travel400.Pages
+@inject NavigationManager Navigation
+
+<style>
+    .video-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        object-fit: cover;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        color: white;
+    }
+
+    .radzen-btn-custom {
+        background-color: orange;
+        color: white;
+        padding: 12px 24px;
+        font-size: 18px;
+        border-radius: 8px;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .radzen-btn-custom:hover {
+            background-color: darkorange;
+        }
+</style>
+
+<video autoplay loop muted class="video-background">
+    <source src="video/travelbg.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<div class="overlay-content">
+    <h1>Welcome to Travel World</h1>
+
+    <RadzenButton Text="View Trips Now"
+                  Style="margin-top: 20px;"
+                  class="radzen-btn-custom"
+                  Click="@GoToAddBooking" />
+</div>
+
+@code {
+    void GoToAddBooking()
+    {
+        Navigation.NavigateTo("/AddBooking");
+    }
+}

@@ -1,0 +1,68 @@
+﻿@page "/AddBooking"
+@using Travel400.Model
+@using Travel400.Service
+@inject SupabaseService SupabaseService
+@inject NavigationManager NavigationManager
+
+<link href="css/AddBooking.css" rel="stylesheet" />
+
+<div class="booking-wrapper">
+
+    <!-- القسم الأيسر: النموذج -->
+    <div class="booking-left">
+        <h3>إضافة حجز جديد - <span class="brand">ReyadTravel</span></h3>
+
+        <RadzenTemplateForm Data="@booking" TItem="Booking" Submit="@SaveBooking">
+
+            <RadzenLabel Text="اسم الدولة" />
+            <RadzenTextBox @bind-Value="booking.CountryName" Name="CountryName" Style="width:100%;" />
+            <RadzenRequiredValidator Component="CountryName" Text="اسم الدولة مطلوب" />
+
+            <RadzenLabel Text="تاريخ الرحلة" Style="margin-top: 10px;" />
+            <RadzenDatePicker @bind-Value="booking.TravelDate" Name="TravelDate" Style="width:100%;" />
+
+            <RadzenLabel Text="عدد المقاعد" Style="margin-top: 10px;" />
+            <RadzenNumeric @bind-Value="booking.SeatsRequested" Name="SeatsRequested" Min="1" Max="500" Style="width:100%;" />
+
+            <RadzenLabel Text="رقم الهاتف" Style="margin-top: 10px;" />
+            <RadzenTextBox @bind-Value="booking.ContactPhone" Name="ContactPhone" Style="width:100%;" />
+            <RadzenRequiredValidator Component="ContactPhone" Text="رقم الهاتف مطلوب" />
+
+            <RadzenLabel Text="ملاحظات (اختياري)" Style="margin-top: 10px;" />
+            <RadzenTextArea @bind-Value="booking.Notes" Name="Notes" Rows="3" Style="width:100%;" />
+
+            <RadzenButton Text="إضافة" ButtonType="ButtonType.Submit" Class="btn-submit" Style="width:100%;margin-top:15px;" />
+
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div class="success-message">@message</div>
+            }
+
+        </RadzenTemplateForm>
+    </div>
+
+    <!-- القسم الأيمن: الإعلان -->
+    <div class="booking-right">
+        <h2>جاهز لاكتشاف العالم؟</h2>
+        <p>ابدأ رحلتك معنا من خلال ReyadTravel واحجز مغامرتك الآن!</p>
+        <RadzenButton Text="عرض الرحلات" Style="margin-top:20px;" Click="GoToTrips" />
+    </div>
+
+</div>
+
+@code {
+    Booking booking = new();
+    string message = "";
+
+    async Task SaveBooking()
+    {
+        await SupabaseService.AddBookingAsync(booking);
+        message = "✅ تم تسجيل الحجز بنجاح!";
+        booking = new();
+    }
+
+    void GoToTrips()
+    {
+        NavigationManager.NavigateTo("/BookingCards");
+    }
+}

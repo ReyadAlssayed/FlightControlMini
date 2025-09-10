@@ -1,0 +1,85 @@
+﻿@page "/CustomerDataGrid"
+@using Travel400.Model
+@using Travel400.Service
+@inject SupabaseService SupabaseService
+@inject NavigationManager Navigation
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="css/CustomerBooking.css" rel="stylesheet" />
+
+<h3 class="page-title">🧾 قائمة الزبائن لجميع الحجوزات</h3>
+
+<RadzenButton Text="عرض الإحصائيات 📊"
+              Click="@GoToStatistics"
+              Style="background-color: #ff7043; color: white; margin-bottom: 20px;" />
+
+<RadzenDropDown TValue="string"
+                Placeholder="اختر الدولة"
+                Data="@availableCountries"
+                @bind-Value="selectedCountry"
+                Change="OnCountryChanged"
+                Style="width: 300px; margin-bottom: 20px;"
+                AllowClear="true"
+                AllowFiltering="true" />
+
+<RadzenDataGrid Data="filteredCustomers" TItem="Customer" ColumnWidth="200px"
+                AllowPaging="false" PageSize="5" AllowFiltering="true" AllowSorting="true">
+    <Columns>
+        <RadzenDataGridColumn TItem="Customer" Property="FullName" Title="الاسم الكامل" />
+        <RadzenDataGridColumn TItem="Customer" Property="PassportNumber" Title="رقم الجواز" />
+        <RadzenDataGridColumn TItem="Customer" Property="Phone" Title="الهاتف" />
+        <RadzenDataGridColumn TItem="Customer" Property="Email" Title="البريد الإلكتروني" />
+        <RadzenDataGridColumn TItem="Customer" Property="Nationality" Title="الجنسية" />
+        <RadzenDataGridColumn TItem="Customer" Property="RegisteredOn" Title="تاريخ التسجيل" FormatString="{0:yyyy/MM/dd}" />
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    List<Customer> allCustomers = new();
+    List<Customer> filteredCustomers = new();
+    List<string> availableCountries = new();
+    string selectedCountry;
+
+    protected override async Task OnInitializedAsync()
+    {
+        allCustomers = await SupabaseService.GetAllCustomersAsync();
+        filteredCustomers = allCustomers;
+
+        var bookings = await SupabaseService.GetAllBookingsAsync();
+        availableCountries = bookings
+            .Where(b => !string.IsNullOrEmpty(b.CountryName))
+            .Select(b => b.CountryName)
+            .Distinct()
+            .ToList();
+    }
+
+    async void OnCountryChanged(object value)
+    {
+        selectedCountry = value?.ToString();
+
+        if (string.IsNullOrEmpty(selectedCountry))
+        {
+            filteredCustomers = allCustomers;
+        }
+        else
+        {
+            var bookings = await SupabaseService.GetAllBookingsAsync();
+            var customerIds = bookings
+                .Where(b => b.CountryName == selectedCountry && b.CustomerId.HasValue)
+                .Select(b => b.CustomerId.Value)
+                .Distinct()
+                .ToList();
+
+            filteredCustomers = allCustomers
+                .Where(c => customerIds.Contains(c.Id))
+                .ToList();
+        }
+
+        StateHasChanged(); // لإعادة تحميل الجدول
+    }
+
+    void GoToStatistics()
+    {
+        Navigation.NavigateTo("/Statistics");
+    }
+}

@@ -1,0 +1,81 @@
+﻿@page "/SearchCustomer"
+@using Travel400.Model
+@using Travel400.Service
+@inject SupabaseService SupabaseService
+@inject NavigationManager Navigation
+
+@using Supabase.Postgrest
+
+<link href="css/CustomerSearch.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<h2 class="main-title">🔍 البحث عن زبون</h2>
+
+<div class="search-box">
+    <input type="text" class="search-input" placeholder="أدخل الاسم، رقم الجواز أو الهاتف" @bind="searchTerm" />
+    <RadzenButton Text="بحث" Click="PerformSearch" Style="background-color: #ff7043; color: white;" />
+</div>
+
+@if (loading)
+{
+    <p>⏳ جاري البحث...</p>
+}
+else if (resultCustomer != null)
+{
+    <div class="result-card">
+        <h3>@resultCustomer.FullName</h3>
+        <p><i class="fas fa-id-card"></i><strong> رقم الجواز:</strong> @resultCustomer.PassportNumber</p>
+        <p><i class="fas fa-flag"></i><strong> الجنسية:</strong> @resultCustomer.Nationality</p>
+        <p><i class="fas fa-phone"></i><strong> الهاتف:</strong> @resultCustomer.Phone</p>
+        <p><i class="fas fa-envelope"></i><strong> البريد:</strong> @resultCustomer.Email</p>
+        <p><i class="fas fa-calendar-alt"></i><strong> مسجل منذ:</strong> @resultCustomer.RegisteredOn.ToShortDateString()</p>
+
+        <!-- ✅ زر الانتقال لجدول الرحلات -->
+        <RadzenButton Text="عرض جدول الرحلات ✈️"
+                      Style="margin-top: 10px; background-color: #00bcd4; color: white;"
+                      Click="@(() => Navigation.NavigateTo("/FlightSchedule"))" />
+    </div>
+}
+else if (searched)
+{
+    <p class="not-found">❌ لم يتم العثور على زبون بهذه المعلومات.</p>
+}
+
+@code {
+    string searchTerm = string.Empty;
+    Customer? resultCustomer;
+    bool loading = false;
+    bool searched = false;
+
+    async Task PerformSearch()
+    {
+        loading = true;
+        resultCustomer = null;
+        searched = false;
+
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            loading = false;
+            return;
+        }
+
+        // البحث برقم الجواز
+        resultCustomer = await SupabaseService.GetCustomerByPassportAsync(searchTerm);
+
+        // البحث برقم الهاتف
+        if (resultCustomer == null)
+        {
+            resultCustomer = await SupabaseService.GetCustomerByPhoneAsync(searchTerm);
+        }
+
+        // البحث بالاسم
+        if (resultCustomer == null)
+        {
+            var list = await SupabaseService.SearchCustomersByNameAsync(searchTerm);
+            resultCustomer = list.FirstOrDefault();
+        }
+
+        loading = false;
+        searched = true;
+    }
+}

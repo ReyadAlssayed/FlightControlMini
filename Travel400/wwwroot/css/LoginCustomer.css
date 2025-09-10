@@ -1,0 +1,187 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+    background-color: #f9f9f9;
+}
+
+.login-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* معلومات الحجز */
+.booking-panel {
+    flex: 1;
+    background: url('https://images.pexels.com/photos/1716825/pexels-photo-1716825.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .booking-panel::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 1;
+    }
+
+.booking-card {
+    position: relative;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 30px 25px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    color: #333;
+    min-height: 300px;
+}
+
+    .booking-card h2 {
+        font-size: 24px;
+        color: #ff7043;
+        margin-bottom: 15px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .booking-card p {
+        font-size: 16px;
+        margin-bottom: 12px;
+        line-height: 1.7;
+    }
+
+    .booking-card strong {
+        color: #ff5722;
+    }
+
+/* نموذج الزبون */
+.form-panel {
+    flex: 1;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 35px 150px;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 600px;
+    min-height: 550px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* شعار رياض ترافل */
+.form-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff7043;
+}
+
+    .form-header img {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+    }
+
+.form-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff7043;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* الحقول */
+.form-field {
+    margin-bottom: 16px;
+}
+
+input[type="text"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 12px 100px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: #fdfdfd;
+    transition: all 0.3s;
+}
+
+    input:focus,
+    select:focus {
+        border-color: #ff7043;
+        box-shadow: 0 0 0 2px rgba(255, 112, 67, 0.2);
+    }
+
+/* زر التسجيل */
+.btn-submit {
+    background-color: #ff7043;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 12px;
+    transition: 0.3s;
+    font-size: 16px;
+    width: 100%;
+    color: #fff;
+}
+
+    .btn-submit:hover {
+        background-color: #f4511e;
+    }
+
+/* رسائل الخطأ */
+.validation-message {
+    color: #d32f2f;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* تجاوب الجوال */
+@media (max-width: 768px) {
+    .login-wrapper {
+        flex-direction: column-reverse;
+        height: auto;
+    }
+
+    .booking-panel,
+    .form-panel {
+        flex: none;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .form-container,
+    .booking-card {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,62 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.filters-bar {
+    display: flex;
+    justify-content: flex-start; /* القائمة إلى اليمين */
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+    .filters-bar .rz-dropdown {
+        width: 250px;
+        font-size: 16px;
+    }
+
+/* تأثير اللون البرتقالي عند تمرير الماوس على عناصر القائمة */
+.rz-dropdown-item:hover {
+    background-color: #ff7043 !important;
+    color: white;
+}
+
+/* تأثير اللون البرتقالي عند تمرير الماوس على صفوف الجدول */
+.rz-datatable-table tr:hover {
+    background-color: #fff3e0 !important;
+}
+
+/* تنسيق الأعمدة */
+.rz-datatable {
+    font-size: 15px;
+    direction: rtl;
+}
+
+.rz-column-header {
+    text-align: right;
+    font-weight: bold;
+    color: #444;
+}
+
+.rz-datatable td {
+    text-align: right;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+/* تنسيق الرسالة عند عدم وجود بيانات */
+.rz-datatable .rz-datatable-empty {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+}

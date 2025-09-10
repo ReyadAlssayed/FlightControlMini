@@ -1,0 +1,97 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Cairo', sans-serif;
+}
+
+.booking-wrapper {
+    display: flex;
+    max-width: 960px;
+    margin: 40px auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.booking-left {
+    flex: 1;
+    padding: 40px;
+    background-color: #ffffff;
+}
+
+    .booking-left h3 {
+        margin-bottom: 25px;
+        font-size: 26px;
+        font-weight: 700;
+        color: #333;
+        text-align: center;
+        line-height: 1.6;
+    }
+
+    .booking-left .brand {
+        color: #ff7043;
+        font-weight: 700;
+        margin-right: 8px;
+    }
+
+.booking-right {
+    flex: 1;
+    padding: 40px;
+    background: linear-gradient(135deg, #ffab91, #ff7043); /* برتقالي أفتح */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* ✅ وسط تماماً */
+    text-align: center;
+    line-height: 1.8;
+    border-radius: 0 6px 6px 0;
+}
+
+    .booking-right h2 {
+        font-size: 26px;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .booking-right p {
+        font-size: 17px;
+        max-width: 300px;
+        margin-bottom: 20px;
+    }
+
+    .booking-right .rz-button {
+        background-color: #fff;
+        color: #ff5722;
+        border: none;
+        font-weight: bold;
+        padding: 10px 24px;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+
+
+.btn-submit {
+    background-color: #ff7043;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 12px;
+    transition: 0.3s;
+    font-size: 16px;
+    width: 100%;
+}
+
+    .btn-submit:hover {
+        background-color: #f4511e;
+    }
+
+.success-message {
+    margin-top: 10px;
+    color: #ff7043;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.1rem;
+}

@@ -1,0 +1,121 @@
+﻿@page "/BookingCards"
+@using Travel400.Model
+@using Travel400.Service
+@inject SupabaseService SupabaseService
+@inject NavigationManager Navigation
+
+<link href="css/BookingCards.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<h3 class="page-title">📋 قائمة الحجوزات - ReyadTravel</h3>
+
+<div class="cards-container">
+    @if (pagedBookings == null || !pagedBookings.Any())
+    {
+        <p>لا توجد حجوزات حالياً.</p>
+    }
+    else
+    {
+        @foreach (var booking in pagedBookings)
+        {
+            <div class="booking-wrapper">
+                <RadzenCard class="booking-card">
+                    <div class="card-corner"></div>
+
+                    <h4>@booking.CountryName</h4>
+
+                    <p><i class="fas fa-calendar-alt"></i> تاريخ الرحلة: @booking.TravelDate.ToShortDateString()</p>
+                    <p><i class="fas fa-users"></i> عدد المقاعد: @booking.SeatsRequested</p>
+                    <p><i class="fas fa-phone"></i> الهاتف: @booking.ContactPhone</p>
+
+                    @if (!string.IsNullOrWhiteSpace(booking.Notes))
+                    {
+                        <p><i class="fas fa-sticky-note"></i> ملاحظتك: @booking.Notes</p>
+                    }
+
+                    @if (booking.IsCanceled)
+                    {
+                        <p class="cancel-text">❌ تم إلغاء هذا الحجز</p>
+                    }
+                </RadzenCard>
+
+                <div class="card-buttons">
+                    <RadzenButton Icon="plus-circle" Text="احجز"
+                                  ButtonStyle="ButtonStyle.Warning"
+                                  Click="@(args => GoToCustomerForm(booking.Id))" />
+
+                    <RadzenButton Icon="user" Text="عرض"
+                                  ButtonStyle="ButtonStyle.Success"
+                                  Click="@(args => ViewCustomers(booking.Id))" />
+
+                    <RadzenButton Icon="edit" Text="تعديل"
+                                  ButtonStyle="ButtonStyle.Info"
+                                  Click="@(args => EditBooking(booking.Id))" />
+
+                    <RadzenButton Icon="trash" Text="حذف"
+                                  ButtonStyle="ButtonStyle.Danger"
+                                  Click="@(args => DeleteBooking(booking.Id))" />
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@if (allBookings.Count > pageSize)
+{
+    <RadzenPager Count="@allBookings.Count"
+                 PageSize="@pageSize"
+                 PageIndex="@currentPage"
+                 PageChanged="@OnPageChanged"
+                 Style="margin-top: 20px; text-align:center;" />
+}
+
+@code {
+    List<Booking> allBookings = new();
+    List<Booking> pagedBookings = new();
+
+    int pageSize = 3;
+    int currentPage = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        allBookings = await SupabaseService.GetAllBookingsAsync();
+        LoadPage();
+    }
+
+    void LoadPage()
+    {
+        pagedBookings = allBookings
+            .Skip(currentPage * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    void OnPageChanged(Radzen.PagerEventArgs args)
+    {
+        currentPage = args.PageIndex;
+        LoadPage();
+    }
+
+    async Task DeleteBooking(int id)
+    {
+        await SupabaseService.DeleteBookingAsync(id);
+        allBookings = await SupabaseService.GetAllBookingsAsync();
+        LoadPage();
+    }
+
+    void ViewCustomers(int bookingId)
+    {
+        Console.WriteLine($"عرض الحاجزين للحجز رقم: {bookingId}");
+    }
+
+    void EditBooking(int bookingId)
+    {
+        Console.WriteLine($"تعديل الحجز رقم: {bookingId}");
+    }
+
+    void GoToCustomerForm(int bookingId)
+    {
+        Navigation.NavigateTo($"/LoginCustom/{bookingId}");
+    }
+}
